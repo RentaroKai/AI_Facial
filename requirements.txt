@@ -1,0 +1,5 @@
+PySide6>=6.6.1
+google-generativeai>=0.3.2
+google-ai-generativelanguage>=0.4.0
+
+python-dotenv>=1.0.1 
