@@ -7,7 +7,8 @@
 ## 簡単な使い方
 
 ①環境変数 GOOGLE_API_KEYにGoogle Gemini APIのキーを設定  
-②exe実行 （リリースってところにある）または run.batを実行
+②requirements.txtをインストール
+②run.batを実行
 ③画像(複数可)をドラッグアンドドロップ  
 ④解析実行押す  
 ⑤📁開くとcsv入ってる
