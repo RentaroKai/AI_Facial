@@ -43,36 +43,40 @@ class ImageProcessingWorker(QThread):
             print(f"DEBUG: Starting processing file: {file_path}")
             try:
                 # Upload file using Gemini API
-                file_obj = upload_to_gemini(file_path, mime_type='image/jpeg')
+                if file_path.lower().endswith('.png'):
+                    mime_type = 'image/png'
+                else:
+                    mime_type = 'image/jpeg'
+                file_obj = upload_to_gemini(file_path, mime_type=mime_type)
                 print(f"DEBUG: Uploaded {file_name} with URI: {file_obj.uri}")
 
                 # Analyze the image using Gemini API
                 response = analyze_expression(file_obj)
                 print(f"DEBUG: Received analysis response for {file_name}")
-                
+
                 # Extract the JSON response
                 result_text = response.text
                 # Remove any markdown formatting if present (```json and ```)
                 result_text = result_text.replace("```json", "").replace("```", "").strip()
-                
+
                 # Extract emotion name and line text
                 emotion_name, line_text = extract_info(result_text)
-                
+
                 self.result_signal.emit({
-                    "file_name": file_name, 
-                    "path": file_path, 
+                    "file_name": file_name,
+                    "path": file_path,
                     "result": result_text,
                     "表情の名前": emotion_name,
                     "言いそうなセリフ": line_text
                 })
-                
+
                 output_rows.append({
                     "ファイル名": file_name,
                     "ファイルパス": file_path,
                     "表情の名前": emotion_name,
                     "言いそうなセリフ": line_text
                 })
-                
+
             except Exception as e:
                 error_message = f"Error processing {file_name}: {str(e)}"
                 print(f"DEBUG: {error_message}")
@@ -103,4 +107,4 @@ class ImageProcessingWorker(QThread):
                 }
                 writer.writerow(cleaned_row)
         print(f"DEBUG: CSV file written to {csv_file_path}")
-        self.finished_signal.emit() 
+        self.finished_signal.emit()
